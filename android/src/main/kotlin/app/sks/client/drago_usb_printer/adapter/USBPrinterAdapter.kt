@@ -105,8 +105,8 @@ class USBPrinterAdapter {
     }
 
     fun selectDevice(vendorId: Int, productId: Int): Boolean {
-        if (mUsbDevice == null || mUsbDevice!!.vendorId != vendorId || mUsbDevice!!.productId != productId) {
-            closeConnectionIfExists()
+//         if (mUsbDevice == null || mUsbDevice!!.vendorId != vendorId || mUsbDevice!!.productId != productId) {
+//             closeConnectionIfExists()
             val usbDevices = getDeviceList()
             for (usbDevice in usbDevices) {
                 if (usbDevice.vendorId == vendorId && usbDevice.productId == productId) {
@@ -119,8 +119,8 @@ class USBPrinterAdapter {
                     return true
                 }
             }
-            return false
-        }
+//             return false
+//         }
         return true
     }
 
@@ -198,19 +198,23 @@ class USBPrinterAdapter {
         }
     }
 
-    fun write(bytes: ByteArray): Boolean {
+     fun write(bytes: ByteArray):  Boolean? {
         Log.v(LOG_TAG, "start to print raw data $bytes")
         val isConnected = openConnection()
-        return if (isConnected) {
+        if (isConnected) {
+            var isSuccess : Boolean?
             Log.v(LOG_TAG, "Connected to device")
-            Thread {
-                val b = mUsbDeviceConnection!!.bulkTransfer(mEndPoint, bytes, bytes.size, 100000)
-                Log.i(LOG_TAG, "Return Status: $b")
-            }.start()
-            true
+
+            val b = mUsbDeviceConnection!!.bulkTransfer(mEndPoint, bytes, bytes.size, 100000)
+            Log.i(LOG_TAG, "Return Status: $b")
+
+            if(b == -1){
+                isSuccess = null;
+            } else isSuccess = true
+            return isSuccess
         } else {
             Log.v(LOG_TAG, "failed to connected to device")
-            false
+            return   false
         }
     }
 }
