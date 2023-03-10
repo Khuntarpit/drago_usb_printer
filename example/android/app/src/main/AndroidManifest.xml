@@ -2,6 +2,7 @@
     package="app.sks.client.drago_usb_printer_example">
    <application
         android:label="drago_usb_printer_example"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
